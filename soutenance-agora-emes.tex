@@ -1,0 +1,833 @@
+% ============================================================
+%  AGOR@-EMES — Soutenance de Licence ARI
+%  Mohamed Saobane MOUTALABI — ENEAM/UAC — 2025-2026
+%  Compilateur : pdfLaTeX (Overleaf)
+% ============================================================
+
+\documentclass[aspectratio=169, 10pt]{beamer}
+
+% ── Encodage & langue ───────────────────────────────────────
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+\usepackage{lmodern}
+
+% ── Packages utilitaires ────────────────────────────────────
+\usepackage{booktabs}
+\usepackage{colortbl}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{graphicx}
+\usepackage{listings}
+\usepackage{microtype}
+\usepackage{setspace}
+
+\usetikzlibrary{shapes.geometric, arrows.meta, positioning, calc}
+
+% ── Palette de couleurs ─────────────────────────────────────
+\definecolor{EMESblue}{RGB}{37,99,235}
+\definecolor{EMESlightblue}{RGB}{219,234,254}
+\definecolor{EMESnavyblue}{RGB}{10,22,40}
+\definecolor{EMESgray}{RGB}{107,114,128}
+\definecolor{EMESlightgray}{RGB}{243,244,246}
+\definecolor{EMESdarkgray}{RGB}{31,41,55}
+\definecolor{EMESgreen}{RGB}{22,163,74}
+\definecolor{EMESlightgreen}{RGB}{209,250,229}
+\definecolor{EMESamber}{RGB}{217,119,6}
+\definecolor{EMESlightamber}{RGB}{254,243,199}
+\definecolor{EMESred}{RGB}{220,38,38}
+\definecolor{codebg}{RGB}{17,24,39}
+\definecolor{codetext}{RGB}{226,232,240}
+\definecolor{codekw}{RGB}{147,197,253}
+\definecolor{codestr}{RGB}{134,239,172}
+\definecolor{codecmt}{RGB}{107,114,128}
+\definecolor{codefn}{RGB}{251,191,36}
+
+% ── Thème Beamer ────────────────────────────────────────────
+\usetheme{Madrid}
+\usecolortheme[named=EMESblue]{structure}
+
+\setbeamercolor{palette primary}{bg=EMESnavyblue, fg=white}
+\setbeamercolor{palette secondary}{bg=EMESblue, fg=white}
+\setbeamercolor{palette tertiary}{bg=EMESblue!80, fg=white}
+\setbeamercolor{palette quaternary}{bg=EMESnavyblue, fg=white}
+\setbeamercolor{titlelike}{parent=palette primary}
+\setbeamercolor{frametitle}{bg=EMESnavyblue, fg=white}
+\setbeamercolor{block title}{bg=EMESblue, fg=white}
+\setbeamercolor{block body}{bg=EMESlightblue!40, fg=EMESdarkgray}
+\setbeamercolor{block title alerted}{bg=EMESred, fg=white}
+\setbeamercolor{block body alerted}{bg=red!5, fg=EMESdarkgray}
+\setbeamercolor{block title example}{bg=EMESgreen, fg=white}
+\setbeamercolor{block body example}{bg=EMESlightgreen!40, fg=EMESdarkgray}
+\setbeamercolor{item}{fg=EMESblue}
+\setbeamercolor{subitem}{fg=EMESgray}
+
+\setbeamerfont{title}{size=\Large, series=\bfseries}
+\setbeamerfont{frametitle}{size=\normalsize, series=\bfseries}
+\setbeamerfont{block title}{size=\small, series=\bfseries}
+
+% Pied de page personnalisé
+\setbeamertemplate{footline}{%
+  \leavevmode%
+  \hbox{%
+    \begin{beamercolorbox}[wd=.40\paperwidth, ht=2.25ex, dp=1ex, left, leftskip=1em]{palette primary}%
+      \usebeamerfont{author in head/foot}\textbf{M. S. MOUTALABI} \textbar{} ENEAM--UAC
+    \end{beamercolorbox}%
+    \begin{beamercolorbox}[wd=.40\paperwidth, ht=2.25ex, dp=1ex, center]{palette secondary}%
+      \usebeamerfont{title in head/foot}\textbf{AGOR@-EMES} \textbar{} Soutenance de Licence ARI
+    \end{beamercolorbox}%
+    \begin{beamercolorbox}[wd=.20\paperwidth, ht=2.25ex, dp=1ex, right, rightskip=1em]{palette tertiary}%
+      \usebeamerfont{date in head/foot}
+      \insertframenumber{} / \inserttotalframenumber
+    \end{beamercolorbox}%
+  }%
+}
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{itemize item}{\textcolor{EMESblue}{$\blacktriangleright$}}
+\setbeamertemplate{itemize subitem}{\textcolor{EMESgray}{$\triangleright$}}
+
+% ── Listings (code source) ──────────────────────────────────
+\lstset{
+  backgroundcolor=\color{codebg},
+  basicstyle=\tiny\ttfamily\color{codetext},
+  keywordstyle=\color{codekw}\bfseries,
+  stringstyle=\color{codestr},
+  commentstyle=\color{codecmt}\itshape,
+  numbers=none,
+  breaklines=true,
+  frame=none,
+  showstringspaces=false,
+  tabsize=2,
+  xleftmargin=4pt,
+  xrightmargin=4pt,
+  aboveskip=4pt,
+  belowskip=4pt,
+  language=PHP,
+  morekeywords={artisan, schedule, everyFiveMinutes, withoutOverlapping,
+                runInBackground, command, if, return, env},
+  literate={é}{{\'{e}}}1 {è}{{\`{e}}}1 {ê}{{\^{e}}}1
+           {à}{{\`{a}}}1 {â}{{\^{a}}}1 {ù}{{\`{u}}}1
+           {ô}{{\^{o}}}1 {î}{{\^{i}}}1 {ç}{{\c{c}}}1
+}
+
+% ── Commandes utilitaires ───────────────────────────────────
+\newcommand{\EMESbadge}[2]{%
+  \tikz[baseline=(badge.base)]{%
+    \node[fill=#1, text=#2, rounded corners=3pt,
+          inner xsep=5pt, inner ysep=2pt,
+          font=\tiny\bfseries] (badge) {#2};%
+  }%
+}
+
+\newcommand{\bluebadge}[1]{%
+  \tikz[baseline=(b.base)]{%
+    \node[fill=EMESlightblue, text=EMESblue!80!black, rounded corners=3pt,
+          inner xsep=4pt, inner ysep=1.5pt, font=\tiny\bfseries] (b) {#1};%
+  }%
+}
+
+\newcommand{\greenbadge}[1]{%
+  \tikz[baseline=(b.base)]{%
+    \node[fill=EMESlightgreen, text=EMESgreen!80!black, rounded corners=3pt,
+          inner xsep=4pt, inner ysep=1.5pt, font=\tiny\bfseries] (b) {#1};%
+  }%
+}
+
+\newcommand{\graybadge}[1]{%
+  \tikz[baseline=(b.base)]{%
+    \node[fill=EMESlightgray, text=EMESgray, rounded corners=3pt,
+          inner xsep=4pt, inner ysep=1.5pt, font=\tiny\bfseries] (b) {#1};%
+  }%
+}
+
+\newcommand{\amberbadge}[1]{%
+  \tikz[baseline=(b.base)]{%
+    \node[fill=EMESlightamber, text=EMESamber, rounded corners=3pt,
+          inner xsep=4pt, inner ysep=1.5pt, font=\tiny\bfseries] (b) {#1};%
+  }%
+}
+
+\newcommand{\circlenum}[1]{%
+  \tikz[baseline=(n.base)]{%
+    \node[circle, fill=EMESblue, text=white,
+          inner sep=1.5pt, font=\scriptsize\bfseries, minimum size=16pt] (n) {#1};%
+  }%
+}
+
+\newcommand{\checkitem}{\textcolor{EMESgreen}{$\checkmark$}}
+\newcommand{\crossitem}{\textcolor{EMESred}{$\times$}}
+\newcommand{\partialitem}{\textcolor{EMESamber}{$\sim$}}
+
+% ── Métadonnées ─────────────────────────────────────────────
+\title[AGOR@-EMES]{%
+  Implémentation et mise en \oe uvre d'une application intranet\\
+  de suivi automatisé de présence avec gestion adaptative\\
+  de la randomisation MAC : \textbf{AGOR@-EMES}%
+}
+\author[M.~S.~MOUTALABI]{%
+  \textbf{Mohamed Saobane MOUTALABI}\\[4pt]
+  {\small Maître de mémoire : Dr.~Emery ASSOGBA --- Directeur Technique, EMES Sarl}%
+}
+\institute[ENEAM -- UAC]{%
+  École Nationale d'Économie Appliquée et de Management\\
+  Université d'Abomey-Calavi\\[3pt]
+  {\small Filière : Informatique de Gestion \textbar{} Option : ARI}%
+}
+\date{Juillet -- Août 2026}
+
+% ============================================================
+\begin{document}
+% ============================================================
+
+% ── SLIDE 1 : PAGE DE TITRE ─────────────────────────────────
+{
+\setbeamertemplate{footline}{}
+\begin{frame}[plain, noframenumbering]
+  \vspace{-0.3cm}
+  \begin{columns}[T]
+    \begin{column}{0.22\textwidth}
+      \vspace{0.4cm}
+      \begin{center}
+        \begin{tikzpicture}
+          \draw[EMESblue, line width=1.5pt] (0,0) rectangle (2.6,3.8);
+          \fill[EMESnavyblue] (0,0) rectangle (2.6,3.8);
+          \node[text=white, font=\tiny\bfseries, align=center] at (1.3,3.2)
+            {ENEAM -- UAC};
+          \node[text=EMESlightblue, font=\tiny, align=center] at (1.3,2.6)
+            {Licence 3 ARI\\2025--2026};
+          \draw[EMESblue!50, line width=0.5pt] (0.2,2.2) -- (2.4,2.2);
+          \node[text=white, font=\tiny\bfseries, align=center] at (1.3,1.7)
+            {EMES Sarl};
+          \node[text=EMESgray, font=\tiny, align=center] at (1.3,1.1)
+            {Gbégamey\\Cotonou, Bénin};
+          \draw[EMESblue!50, line width=0.5pt] (0.2,0.7) -- (2.4,0.7);
+          \node[text=EMESgray, font=\tiny, align=center] at (1.3,0.35)
+            {Juillet--Août 2026};
+        \end{tikzpicture}
+      \end{center}
+    \end{column}
+    \begin{column}{0.78\textwidth}
+      \vspace{0.3cm}
+      {\tiny\textcolor{EMESblue}{\textbf{MÉMOIRE DE FIN DE CYCLE --- LICENCE ARI}}}
+      \vspace{0.25cm}
+
+      {\Large\textbf{\textcolor{EMESblue}{AGOR}}\textbf{@-}\textbf{\textcolor{EMESblue}{EMES}}}
+      \vspace{0.15cm}
+
+      {\small\textit{Implémentation et mise en \oe uvre d'une application intranet de\\
+      suivi automatisé de présence avec gestion adaptative de la randomisation MAC}}
+      \vspace{0.4cm}
+
+      \begin{columns}[T]
+        \begin{column}{0.48\textwidth}
+          \begin{block}{\scriptsize Auteur}
+            \scriptsize Mohamed Saobane MOUTALABI\\
+            Licence 3 --- Informatique de Gestion
+          \end{block}
+        \end{column}
+        \begin{column}{0.48\textwidth}
+          \begin{block}{\scriptsize Encadrement}
+            \scriptsize Dr.~Emery ASSOGBA\\
+            Directeur Technique, EMES Sarl
+          \end{block}
+        \end{column}
+      \end{columns}
+      \vspace{0.3cm}
+      \begin{columns}[T]
+        \begin{column}{0.48\textwidth}
+          \begin{block}{\scriptsize Stack technique}
+            \scriptsize Laravel 11 (API) \textbar{} React 18 (SPA) \textbar{} MySQL 8
+          \end{block}
+        \end{column}
+        \begin{column}{0.48\textwidth}
+          \begin{block}{\scriptsize Soutenance}
+            \scriptsize Juillet -- Août 2026 \textbar{} ENEAM -- UAC
+          \end{block}
+        \end{column}
+      \end{columns}
+    \end{column}
+  \end{columns}
+  \vspace{0.1cm}
+  \begin{tikzpicture}
+    \fill[EMESblue] (0,0) rectangle (\paperwidth, 3pt);
+    \fill[EMESlightblue] (0,3pt) rectangle (\paperwidth, 5pt);
+  \end{tikzpicture}
+\end{frame}
+}
+
+% ── SLIDE 2 : PLAN ──────────────────────────────────────────
+\begin{frame}{Plan de la présentation}
+  \begin{center}
+    {\small 15 minutes \textbar{} 12 diapositives}
+  \end{center}
+  \vspace{0.3cm}
+  \begin{columns}[T]
+    \begin{column}{0.18\textwidth}
+      \begin{block}{\centering\scriptsize 01}
+        \centering\tiny\textbf{Contexte \&\\Entreprise}\\[2pt]
+        \textcolor{EMESgray}{\tiny $\sim$2 min}
+      \end{block}
+    \end{column}
+    \begin{column}{0.18\textwidth}
+      \begin{block}{\centering\scriptsize 02}
+        \centering\tiny\textbf{Problé-\\matique}\\[2pt]
+        \textcolor{EMESgray}{\tiny $\sim$2 min}
+      \end{block}
+    \end{column}
+    \begin{column}{0.18\textwidth}
+      \begin{alertblock}{\centering\scriptsize 03}
+        \centering\tiny\textbf{Solution\\AGOR@-EMES}\\[2pt]
+        \textcolor{white}{\tiny $\sim$4 min}
+      \end{alertblock}
+    \end{column}
+    \begin{column}{0.18\textwidth}
+      \begin{alertblock}{\centering\scriptsize 04}
+        \centering\tiny\textbf{Résultats\\des tests}\\[2pt]
+        \textcolor{white}{\tiny $\sim$4 min}
+      \end{alertblock}
+    \end{column}
+    \begin{column}{0.18\textwidth}
+      \begin{block}{\centering\scriptsize 05}
+        \centering\tiny\textbf{Limites \&\\Perspectives}\\[2pt]
+        \textcolor{EMESgray}{\tiny $\sim$3 min}
+      \end{block}
+    \end{column}
+  \end{columns}
+  \vspace{0.5cm}
+  \begin{center}
+    \begin{tikzpicture}
+      \node[fill=EMESlightblue, draw=EMESblue, rounded corners=4pt,
+            inner xsep=8pt, inner ysep=4pt,
+            font=\small\bfseries, text=EMESblue!80!black] {%
+        Innovation centrale : Moteur MAC Dynamique%
+      };
+    \end{tikzpicture}
+  \end{center}
+  \vspace{0.2cm}
+  \begin{center}
+    \bluebadge{Restriction IP middleware} \quad
+    \bluebadge{ARP · SNMP · DHCP} \quad
+    \bluebadge{Laravel 11 · React 18}
+  \end{center}
+\end{frame}
+
+% ── SLIDE 3 : CONTEXTE ──────────────────────────────────────
+\begin{frame}{Contexte \& entreprise d'accueil}
+  \begin{columns}[T]
+    \begin{column}{0.56\textwidth}
+      \textbf{\textcolor{EMESblue}{\small Problèmes identifiés chez EMES Sarl}}
+      \vspace{0.2cm}
+
+      \begin{itemize}\setlength\itemsep{6pt}
+        \item \textbf{Absentéisme non documenté} ---
+          Aucun système de pointage formel. Les retards ne sont ni enregistrés ni notifiés à la direction.
+
+        \item \textbf{Absence de traçabilité} ---
+          Instructions verbales ou messagerie informelle, sans historique centralisé des activités.
+
+        \item \textbf{Suivi pédagogique inexistant} ---
+          Aucun support structuré pour évaluer les apprenants en formation continue.
+
+        \item \textbf{Supervision à distance impossible} ---
+          Dr.~Emery et Mme OUSSOU ne disposent d'aucun outil de suivi temps réel depuis l'extérieur.
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.42\textwidth}
+      \begin{block}{EMES Sarl --- Profil}
+        \scriptsize
+        \textbf{Fondée :} Janvier 2021 --- Gbégamey, Cotonou\\[4pt]
+        \begin{itemize}\setlength\itemsep{3pt}
+          \item Sécurité informatique \& audits PenTest
+          \item Réseaux \& systèmes d'information
+          \item Génie logiciel \& DevSecOps
+          \item Formation \& certifications Linux/OffSec
+        \end{itemize}
+      \end{block}
+      \vspace{0.3cm}
+      \begin{exampleblock}{Missions effectuées durant le stage}
+        \scriptsize
+        \begin{itemize}\setlength\itemsep{2pt}
+          \item Stack ELK --- HORSE SARL
+          \item Recette QA --- projet SISEB
+          \item Mission DSI --- ANPS
+          \item Supervision Zabbix / MikroTik
+        \end{itemize}
+      \end{exampleblock}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+% ── SLIDE 4 : PROBLÉMATIQUE ─────────────────────────────────
+{
+\setbeamercolor{background canvas}{bg=EMESnavyblue}
+\setbeamercolor{frametitle}{bg=EMESnavyblue, fg=white}
+\setbeamercolor{normal text}{fg=white}
+\begin{frame}{Problématique --- Double contrainte technique}
+  \usebeamercolor[fg]{normal text}
+
+  \vspace{0.1cm}
+  \begin{tikzpicture}
+    \node[fill=EMESblue!30, draw=EMESblue, line width=1pt,
+          rounded corners=4pt, text width=13.5cm,
+          inner xsep=12pt, inner ysep=8pt,
+          font=\small, text=white] {%
+      \textit{Comment automatiser le suivi de présence physique en s'affranchissant
+      de la \textbf{randomisation MAC}, tout en garantissant
+      l'intégrité des données d'accès ?}%
+    };
+  \end{tikzpicture}
+
+  \vspace{0.4cm}
+  \begin{columns}[T]
+    \begin{column}{0.32\textwidth}
+      \begin{tikzpicture}
+        \node[fill=EMESblue!20, draw=EMESblue!60, rounded corners=4pt,
+              text width=3.8cm, inner xsep=8pt, inner ysep=8pt] {%
+          \textcolor{EMESlightblue}{\tiny\bfseries Q1 --- ACCÈS}\\[3pt]
+          \scriptsize\textcolor{white}{Comment restreindre l'accès applicatif au seul réseau local EMES ?}
+        };
+      \end{tikzpicture}
+    \end{column}
+    \begin{column}{0.32\textwidth}
+      \begin{tikzpicture}
+        \node[fill=EMESblue!20, draw=EMESblue!60, rounded corners=4pt,
+              text width=3.8cm, inner xsep=8pt, inner ysep=8pt] {%
+          \textcolor{EMESlightblue}{\tiny\bfseries Q2 --- DÉTECTION}\\[3pt]
+          \scriptsize\textcolor{white}{Comment fusionner ARP, SNMP et DHCP pour une visibilité temps réel fiable ?}
+        };
+      \end{tikzpicture}
+    \end{column}
+    \begin{column}{0.32\textwidth}
+      \begin{tikzpicture}
+        \node[fill=EMESblue!20, draw=EMESblue!60, rounded corners=4pt,
+              text width=3.8cm, inner xsep=8pt, inner ysep=8pt] {%
+          \textcolor{EMESlightblue}{\tiny\bfseries Q3 --- MAC DYNAMIQUE}\\[3pt]
+          \scriptsize\textcolor{white}{Quel algorithme réassocier automatiquement une nouvelle MAC aléatoire à une session active ?}
+        };
+      \end{tikzpicture}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.4cm}
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \textcolor{EMESlightblue}{\scriptsize\textbf{Contrainte 1 --- Randomisation MAC}}\\[3pt]
+      \scriptsize\textcolor{white!80}{Depuis Android~10 et iOS~14, les smartphones génèrent une adresse MAC aléatoire à chaque connexion WiFi. Tout suivi basé sur l'adresse MAC devient inopérant sans mécanisme adaptatif.}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \textcolor{EMESlightblue}{\scriptsize\textbf{Contrainte 2 --- Intégrité de l'accès}}\\[3pt]
+      \scriptsize\textcolor{white!80}{Un stagiaire peut s'authentifier depuis son domicile. Il faut restreindre techniquement l'accès au seul réseau physique de l'entreprise, sans dépendre de l'action de l'utilisateur.}
+    \end{column}
+  \end{columns}
+\end{frame}
+}
+
+% ── SLIDE 5 : ÉTAT DE L'ART ─────────────────────────────────
+\begin{frame}{État de l'art --- Comparaison des solutions existantes}
+  \vspace{0.1cm}
+  \renewcommand{\arraystretch}{1.3}
+  \begin{tabular}{>{\small}l >{\small\centering}p{1.8cm} >{\small\centering}p{1.5cm} >{\small\centering}p{1.8cm} >{\small\centering}p{1.5cm} >{\small\centering\arraybackslash}p{1.8cm}}
+    \toprule
+    \rowcolor{EMESnavyblue}
+    \textcolor{white}{\textbf{Solution}} &
+    \textcolor{white}{\textbf{Coût}} &
+    \textcolor{white}{\textbf{Délai}} &
+    \textcolor{white}{\textbf{Présence}} &
+    \textcolor{white}{\textbf{Action}} &
+    \textcolor{white}{\textbf{Résist. MAC}} \\
+    \midrule
+    Badgeuse / RFID & 500--2\,000\,\$ & Immédiat & \checkitem & \crossitem~Oui & \graybadge{N/A} \\
+    Biométrie & 1\,000--5\,000\,\$ & Immédiat & \checkitem & \crossitem~Oui & \graybadge{N/A} \\
+    SIRH (Odoo/Sage) & 2\,000--10\,000\,\$ & Manuel & \crossitem & \crossitem~Oui & \graybadge{N/A} \\
+    BLE / GPS & 200--800\,\$ & 1--5 min & \partialitem~Partiel & \checkitem~Non & \amberbadge{Partielle} \\
+    \midrule
+    \rowcolor{EMESlightblue}
+    \textbf{AGOR@-EMES} & \textbf{$<$ 100\,\$} & \textbf{$\leq$ 5 min} & \checkitem~\textbf{Oui} & \checkitem~\textbf{Non} & \greenbadge{Totale} \\
+    \bottomrule
+  \end{tabular}
+
+  \vspace{0.4cm}
+  \begin{columns}[T]
+    \begin{column}{0.32\textwidth}
+      \begin{exampleblock}{\scriptsize Avantage clé}
+        \tiny Seule solution répondant \textbf{simultanément} aux 4 exigences du contexte EMES Sarl.
+      \end{exampleblock}
+    \end{column}
+    \begin{column}{0.32\textwidth}
+      \begin{block}{\scriptsize Aucun équipement dédié}
+        \tiny Exploite l'infrastructure WiFi et le routeur \textbf{MikroTik déjà en place}.
+      \end{block}
+    \end{column}
+    \begin{column}{0.32\textwidth}
+      \begin{block}{\scriptsize Conformité légale}
+        \tiny RGPD \& Loi béninoise \textbf{n°2017-20} sur le code du numérique.
+      \end{block}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+% ── SLIDE 6 : SOLUTION GLOBALE ──────────────────────────────
+\begin{frame}{AGOR@-EMES --- 6 modules fonctionnels}
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \begin{block}{\scriptsize Module 1 --- Authentification}
+        \tiny JWT via Laravel Sanctum $\cdot$ Middleware IP \texttt{EnsureLocalNetwork}\\
+        Consentement RGPD $\cdot$ Enregistrement des appareils MAC
+      \end{block}
+      \vspace{3pt}
+      \begin{alertblock}{\scriptsize Module 2 --- Suivi de présence \textnormal{(c\oe ur du système)}}
+        \tiny Daemon ARP + SNMP $\cdot$ Moteur MAC dynamique\\
+        WebSocket temps réel $\cdot$ Fallback QR Code $\cdot$ Alertes retard
+      \end{alertblock}
+      \vspace{3pt}
+      \begin{block}{\scriptsize Module 3 --- Gestion des tâches}
+        \tiny Workflow 4 états : \textit{En attente $\to$ En cours $\to$ Rapport soumis $\to$ Validé / Rejeté}\\
+        Interface Kanban $\cdot$ Soumission de rapports PDF/Image
+      \end{block}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{block}{\scriptsize Module 4 --- Espace stagiaire}
+        \tiny Tableau de bord personnalisé $\cdot$ Historique de présence\\
+        Gestion des appareils et historique MAC
+      \end{block}
+      \vspace{3pt}
+      \begin{block}{\scriptsize Module 5 --- Espace apprenant}
+        \tiny Relevé de notes $\cdot$ Calcul automatique moyenne / mention / rang\\
+        Génération de \textbf{bulletins et attestations PDF} (Laravel DomPDF)
+      \end{block}
+      \vspace{3pt}
+      \begin{block}{\scriptsize Module 6 --- Tableau de bord administrateur}
+        \tiny Vue radar des présences en temps réel $\cdot$ Journal d'audit\\
+        Configuration SNMP $\cdot$ Validation MAC $\cdot$ CRUD utilisateurs
+      \end{block}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+% ── SLIDE 7 : ARCHITECTURE ──────────────────────────────────
+\begin{frame}{Architecture technique 3-tiers \& stack technologique}
+  \begin{columns}[T]
+    \begin{column}{0.52\textwidth}
+      \textbf{\textcolor{EMESblue}{\small Schéma d'architecture}}
+      \vspace{0.2cm}
+
+      \begin{tikzpicture}[
+        zone/.style={draw, rounded corners=3pt, text width=6.5cm,
+                     inner xsep=6pt, inner ysep=4pt, font=\tiny},
+        arrow/.style={->, thick, color=EMESblue}
+      ]
+        \node[zone, fill=EMESlightgray, draw=EMESgray] (internet) {%
+          \textbf{\textcolor{EMESgray}{INTERNET --- Accès distant}}\\
+          Admin / Superviseur \hfill \textcolor{EMESblue}{HTTPS}%
+        };
+
+        \node[zone, fill=EMESlightblue!30, draw=EMESblue,
+              below=0.15cm of internet] (server) {%
+          \textbf{\textcolor{EMESblue}{SERVEUR EMES --- IP Publique}}\\
+          Nginx (Reverse Proxy) \quad API Laravel 11 \quad React 18 SPA\\
+          MySQL 8 \quad Daemon ARP \quad Daemon SNMP \quad Moteur MAC%
+        };
+
+        \node[zone, fill=EMESlightgreen!30, draw=EMESgreen,
+              below=0.15cm of server] (local) {%
+          \textbf{\textcolor{EMESgreen}{RÉSEAU LOCAL WiFi EMES}}\\
+          PC Portables + Smartphones \hfill MikroTik hAP AX lite%
+        };
+
+        \draw[arrow] (internet.south) -- (server.north);
+        \draw[arrow] (local.north) -- (server.south)
+          node[midway, right, font=\tiny, text=EMESgreen]
+            {WiFi / Middleware IP};
+      \end{tikzpicture}
+    \end{column}
+    \begin{column}{0.46\textwidth}
+      \textbf{\textcolor{EMESblue}{\small Stack technologique}}
+      \vspace{0.15cm}
+
+      \renewcommand{\arraystretch}{1.25}
+      \begin{tabular}{>{\tiny\color{EMESgray}\bfseries}l >{\tiny}l}
+        \toprule
+        Couche & Technologie \\
+        \midrule
+        Backend   & Laravel 11 (PHP 8.2) · Artisan scheduler \\
+        Frontend  & React 18 + Vite · SPA \\
+        Auth      & Laravel Sanctum · JWT \\
+        Temps réel & Laravel Reverb · WebSocket \\
+        Réseau    & arp-scan · snmpwalk · Net-SNMP \\
+        Routeur   & MikroTik hAP AX lite · SNMPv2c/v3 \\
+        Serveur   & Ubuntu Server 22.04 LTS · Nginx \\
+        Base de données & MySQL 8 \\
+        PDF       & Laravel DomPDF \\
+        \bottomrule
+      \end{tabular}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+% ── SLIDE 8 : MOTEUR MAC DYNAMIQUE ──────────────────────────
+\begin{frame}{Le Moteur MAC Dynamique --- Innovation centrale}
+  \begin{columns}[T]
+    \begin{column}{0.56\textwidth}
+      \textbf{\textcolor{EMESblue}{\small Algorithme de corrélation événementielle}}
+      \vspace{0.25cm}
+
+      \begin{enumerate}\setlength\itemsep{6pt}
+        \item \textbf{Enregistrement initial} ---
+          À la première connexion WiFi EMES, l'appareil est enregistré avec sa MAC observée (réelle ou aléatoire). Identité liée au token Sanctum actif.
+
+        \item \textbf{Détection d'un changement} ---
+          Quand une MAC inconnue apparaît, le système cherche un utilisateur authentifié dont l'ancienne MAC a disparu au \textit{même cycle de scan}.
+
+        \item \textbf{Réassociation automatique} ---
+          Si un unique candidat correspond : mise à jour dans \texttt{devices}, archivage dans \texttt{mac\_history}, traçage dans \texttt{audit\_logs}. Notification à l'utilisateur.
+
+        \item \textbf{Gestion de l'ambiguïté} ---
+          Plusieurs candidats simultanés $\Rightarrow$ ticket de validation manuelle et notification au superviseur.
+      \end{enumerate}
+    \end{column}
+    \begin{column}{0.42\textwidth}
+      \begin{tikzpicture}
+        \node[fill=EMESnavyblue, rounded corners=5pt,
+              text width=5.5cm, inner xsep=10pt, inner ysep=10pt] {%
+          \textcolor{EMESlightblue}{\tiny\bfseries EXEMPLE CONCRET --- iOS 16}\\[5pt]
+          \ttfamily\tiny
+          \textcolor{EMESgray}{Ancienne MAC :}\\
+          \textcolor{EMESamber}{AA:BB:CC:11:22:33}\\[4pt]
+          \textcolor{EMESgray}{iOS randomise} $\rightarrow$ disparaît\\[4pt]
+          \textcolor{EMESgray}{Nouvelle MAC :}\\
+          \textcolor{EMESgreen}{DD:EE:FF:44:55:66}\\[6pt]
+          \textcolor{white}{$\Rightarrow$ Réassociation automatique}\\
+          \textcolor{white}{$\Rightarrow$ Continuité maintenue}\\
+          \textcolor{white}{$\Rightarrow$ Délai $<$ 5 minutes}
+        };
+      \end{tikzpicture}
+      \vspace{0.3cm}
+      \begin{exampleblock}{\scriptsize Avantage clé}
+        \tiny La randomisation MAC d'iOS et Android \textbf{reste activée}. Aucune contrainte imposée aux utilisateurs. Suivi fiable et conforme RGPD.
+      \end{exampleblock}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+% ── SLIDE 9 : MISE EN OEUVRE ────────────────────────────────
+\begin{frame}{Mise en \oe uvre --- Mécanismes réseau implémentés}
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \textbf{\textcolor{EMESblue}{\small 1. Middleware de restriction IP}}
+      \vspace{0.1cm}
+
+      \begin{lstlisting}[language=PHP]
+// EnsureLocalNetwork.php
+if ($role === 'stagiaire') {
+    $ip = $request->ip();
+    if ($ip !== env('EMES_LOCAL_IP')) {
+        return response()->json([
+          'error' => 'Reseau local EMES uniquement'
+        ], 403);
+    }
+}
+      \end{lstlisting}
+
+      \vspace{0.2cm}
+      \textbf{\textcolor{EMESblue}{\small 2. Daemons --- Scheduler Laravel}}
+      \vspace{0.1cm}
+
+      \begin{lstlisting}[language=PHP]
+// Kernel.php - Toutes les 5 minutes
+$schedule->command('presence:scan')
+  ->everyFiveMinutes()
+  ->withoutOverlapping()
+  ->runInBackground();
+
+$schedule->command('presence:snmp-scan')
+  ->everyFiveMinutes()
+  ->withoutOverlapping();
+      \end{lstlisting}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \textbf{\textcolor{EMESblue}{\small 3. Fusion des sources de détection}}
+      \vspace{0.2cm}
+
+      \begin{block}{\scriptsize ARP Scan actif \hfill \greenbadge{Priorité 1}}
+        \tiny \texttt{arp-scan} sur toutes les interfaces réseau. Taux de détection : 100\,\%. Trafic broadcast limité à chaque cycle.
+      \end{block}
+      \vspace{3pt}
+      \begin{block}{\scriptsize SNMP MikroTik \hfill \bluebadge{Priorité 2}}
+        \tiny OID \texttt{1.3.6.1.2.1.4.22.1.2} (table ARP) + OID WiFi propriétaire MikroTik. Zéro broadcast généré.
+      \end{block}
+      \vspace{3pt}
+      \begin{block}{\scriptsize Baux DHCP \hfill \amberbadge{Fallback}}
+        \tiny Lecture passive. Aucun trafic réseau. Précision temporelle moindre : un bail peut rester actif après le départ.
+      \end{block}
+
+      \vspace{0.2cm}
+      \begin{tikzpicture}
+        \node[fill=EMESlightgray, draw=EMESgray, rounded corners=3pt,
+              inner xsep=6pt, inner ysep=3pt, font=\tiny\ttfamily] {%
+          * * * * * php artisan schedule:run%
+        };
+      \end{tikzpicture}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+% ── SLIDE 10 : RÉSULTATS ────────────────────────────────────
+\begin{frame}{Résultats --- Validation par 5 scénarios de test}
+  \begin{columns}[T]
+    \begin{column}{0.38\textwidth}
+      \begin{exampleblock}{\scriptsize $<$ 5 min --- Délai de détection max}
+        \tiny Arrivée et départ détectés dès le premier cycle de scan suivant la connexion.
+      \end{exampleblock}
+      \vspace{4pt}
+      \begin{exampleblock}{\scriptsize $<$ 5 min --- Réassociation MAC}
+        \tiny Continuité de présence maintenue après randomisation iOS\,/\,Android. Aucune interruption de suivi.
+      \end{exampleblock}
+      \vspace{4pt}
+      \begin{exampleblock}{\scriptsize $<$ 10 s --- Notification retard}
+        \tiny Alerte envoyée à l'administrateur via WebSocket (Laravel Reverb) après détection du retard.
+      \end{exampleblock}
+    \end{column}
+    \begin{column}{0.60\textwidth}
+      \textbf{\textcolor{EMESblue}{\small Synthèse des 5 scénarios de test}}
+      \vspace{0.15cm}
+
+      \renewcommand{\arraystretch}{1.3}
+      \begin{tabular}{>{\tiny}c >{\tiny}p{5.0cm} >{\tiny\centering}p{1.2cm} >{\tiny\centering\arraybackslash}p{0.8cm}}
+        \toprule
+        \rowcolor{EMESnavyblue}
+        \textcolor{white}{\#} &
+        \textcolor{white}{Scénario} &
+        \textcolor{white}{Résultat} &
+        \textcolor{white}{Délai} \\
+        \midrule
+        1 & Détection d'arrivée --- stagiaire Android (retard 12 min) & \greenbadge{Conforme} & $\leq$ 5 min \\
+        2 & Pause déjeuner (12h30--13h30) --- zéro fausse alerte & \greenbadge{Conforme} & N/A \\
+        3 & Réassociation MAC automatique --- iOS 16 randomisation activée & \greenbadge{Conforme} & $\leq$ 5 min \\
+        4 & Pointage de secours QR Code --- daemons indisponibles & \greenbadge{Conforme} & $<$ 2 s \\
+        5 & Restriction IP --- tentative d'accès depuis connexion 4G & \greenbadge{Conforme} & $<$ 1 s \\
+        \bottomrule
+      \end{tabular}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+% ── SLIDE 11 : LIMITES & PERSPECTIVES ───────────────────────
+\begin{frame}{Limites identifiées \& perspectives d'évolution}
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \textbf{\textcolor{EMESred}{\small Limites actuelles}}
+      \vspace{0.2cm}
+
+      \begin{itemize}\setlength\itemsep{6pt}
+        \item \textbf{Granularité temporelle de 5 min} ---
+          La fréquence des scans impose un délai maximal identique, insuffisant pour une précision à la minute.
+
+        \item \textbf{Ambiguïté multi-utilisateurs} ---
+          Si plusieurs utilisateurs changent de MAC simultanément, la réassociation automatique passe en mode validation manuelle.
+
+        \item \textbf{Dépendance au WiFi EMES} ---
+          Un appareil connecté en filaire ou hors réseau échappe à la détection.
+
+        \item \textbf{IP publique dynamique} ---
+          La variable \texttt{EMES\_LOCAL\_IP} doit être mise à jour manuellement en cas de changement d'IP.
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \textbf{\textcolor{EMESblue}{\small Perspectives d'évolution}}
+      \vspace{0.2cm}
+
+      \begin{itemize}\setlength\itemsep{6pt}
+        \item \textbf{Authentification 802.1X / RADIUS} ---
+          Identification au niveau cryptographique (EAP). Résistance totale et native à la randomisation MAC. Infrastructure PKI requise.
+
+        \item \textbf{Module IA --- Détection d'anomalies} ---
+          Exploiter l'historique de présence pour un modèle d'apprentissage automatique de détection comportementale.
+
+        \item \textbf{Extension sondes BLE \& filaire} ---
+          Architecture modulaire prête à intégrer des sondes Bluetooth Low Energy ou des logs SSH.
+
+        \item \textbf{Déploiement en production} ---
+          Passage des simulations contrôlées à l'environnement réel d'EMES Sarl.
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+% ── SLIDE 12 : CONCLUSION ───────────────────────────────────
+{
+\setbeamercolor{background canvas}{bg=EMESnavyblue}
+\setbeamercolor{frametitle}{bg=EMESnavyblue, fg=white}
+\setbeamercolor{normal text}{fg=white}
+\begin{frame}{Conclusion générale}
+  \usebeamercolor[fg]{normal text}
+
+  \begin{center}
+    {\small\textcolor{white!70}{\textit{AGOR@-EMES démontre qu'il est possible d'automatiser un suivi de présence fiable,\\
+    économique et respectueux de la vie privée en exploitant intelligemment une infrastructure WiFi existante.}}}
+  \end{center}
+
+  \vspace{0.3cm}
+  \begin{columns}[T]
+    \begin{column}{0.32\textwidth}
+      \begin{tikzpicture}
+        \node[fill=EMESblue!25, draw=EMESblue!60, rounded corners=4pt,
+              text width=3.8cm, inner xsep=8pt, inner ysep=8pt] {%
+          \textcolor{EMESlightblue}{\scriptsize\bfseries Ingénierie réseau}\\[4pt]
+          \tiny\textcolor{white}{Fusion ARP + SNMP + DHCP --- détection multi-sources robuste et redondante}
+        };
+      \end{tikzpicture}
+    \end{column}
+    \begin{column}{0.32\textwidth}
+      \begin{tikzpicture}
+        \node[fill=EMESblue!25, draw=EMESblue!60, rounded corners=4pt,
+              text width=3.8cm, inner xsep=8pt, inner ysep=8pt] {%
+          \textcolor{EMESlightblue}{\scriptsize\bfseries Innovation algorithmique}\\[4pt]
+          \tiny\textcolor{white}{Moteur MAC Dynamique --- corrélation événementielle, résistance à la randomisation}
+        };
+      \end{tikzpicture}
+    \end{column}
+    \begin{column}{0.32\textwidth}
+      \begin{tikzpicture}
+        \node[fill=EMESblue!25, draw=EMESblue!60, rounded corners=4pt,
+              text width=3.8cm, inner xsep=8pt, inner ysep=8pt] {%
+          \textcolor{EMESlightblue}{\scriptsize\bfseries Développement moderne}\\[4pt]
+          \tiny\textcolor{white}{Laravel 11 + React 18 --- plateforme modulaire, maintenable et extensible}
+        };
+      \end{tikzpicture}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.5cm}
+  \begin{tikzpicture}
+    \draw[white!20, line width=0.5pt] (0,0) -- (\textwidth,0);
+  \end{tikzpicture}
+  \vspace{0.3cm}
+
+  \begin{columns}[T]
+    \begin{column}{0.5\textwidth}
+      {\Large\textbf{\textcolor{EMESlightblue}{Merci pour votre attention.}}}\\[6pt]
+      {\small\textcolor{white!60}{Je reste à votre disposition\\pour répondre à vos questions.}}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{flushright}
+        {\small\textbf{\textcolor{white}{Mohamed Saobane MOUTALABI}}}\\
+        {\tiny\textcolor{white!60}{Licence 3 ARI · ENEAM--UAC · 2025--2026}}\\[4pt]
+        {\tiny\textcolor{white!50}{Maître de mémoire : Dr.~Emery ASSOGBA}}\\
+        {\tiny\textcolor{white!50}{Directeur Technique, EMES Sarl}}
+      \end{flushright}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.2cm}
+  \begin{tikzpicture}
+    \fill[EMESblue] (0,0) rectangle (\textwidth, 3pt);
+    \fill[EMESlightblue] (0,3pt) rectangle (\textwidth, 5pt);
+  \end{tikzpicture}
+\end{frame}
+}
+
+% ============================================================
+\end{document}
+% ============================================================
