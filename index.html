@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MSM · Beamer</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <style>
+        /* ============================================
+                   RESET & BASE
+                ============================================ */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #f0f0eb;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            color: #1a1a1e;
+        }
+
+        /* ============================================
+                   SPLASH SCREEN
+                ============================================ */
+        .splash {
+            position: fixed;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: #f0f0eb;
+            z-index: 1000;
+            transition: opacity 0.6s ease, visibility 0.6s ease;
+        }
+
+        .splash.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        /* ============================================
+                   ACTE 1 : LOGO AVEC ONDULATIONS
+                ============================================ */
+        .acte-logo {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: absolute;
+            inset: 0;
+            transition: opacity 0.8s ease, transform 0.8s ease;
+            cursor: pointer;
+        }
+
+        .acte-logo.fade-out {
+            opacity: 0;
+            transform: scale(1.1);
+            pointer-events: none;
+        }
+
+        /* ===== ONDULATIONS D'EAU ===== */
+        .ripple-container {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .ripple {
+            position: absolute;
+            border-radius: 50%;
+            /* 
+                👇 ÉPAISSEUR & VISIBILITÉ DES ONDULATIONS
+                - border: Xpx  → épaisseur du trait
+                - rgba(0,0,0, Y) → 0 = invisible, 0.5 = très visible
+            */
+            border: 5px solid rgba(0, 0, 0, 0.20);
+            animation: rippleAnim 2s ease-out infinite;
+            pointer-events: none;
+        }
+
+        .ripple:nth-child(1) {
+            width: 340px;
+            height: 340px;
+            animation-delay: 0s;
+        }
+
+        .ripple:nth-child(2) {
+            width: 400px;
+            height: 400px;
+            animation-delay: 0.8s;
+        }
+
+        .ripple:nth-child(3) {
+            width: 460px;
+            height: 460px;
+            animation-delay: 1.6s;
+        }
+
+        .ripple:nth-child(4) {
+            width: 520px;
+            height: 520px;
+            animation-delay: 2.4s;
+        }
+
+        .ripple:nth-child(5) {
+            width: 580px;
+            height: 580px;
+            animation-delay: 3.2s;
+        }
+
+        @keyframes rippleAnim {
+            0% {
+                transform: scale(0.8);
+                opacity: 0.6;
+                border-width: 5px;
+            }
+            100% {
+                transform: scale(1.4);
+                opacity: 0;
+                border-width: 1px;
+            }
+        }
+
+        /* ===== LOGO ===== */
+        .logo-msm {
+            /*
+                👇 TAILLE DU LOGO
+                Augmente ou diminue les deux valeurs ensemble
+            */
+            width: 480px;
+            height: 480px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
+            z-index: 2;
+            transition: transform 0.3s ease;
+        }
+
+        .logo-msm:hover {
+            transform: scale(1.02);
+        }
+
+        .logo-msm img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            display: block;
+        }
+
+        /* ===== INDICATEUR "CLIQUEZ" ===== */
+        .click-hint {
+            margin-top: 1.2rem;
+            /*
+                👇 TAILLE DU TEXTE "Cliquez sur le logo"
+            */
+            font-size: 15px;
+            font-weight: 500;
+            color: rgba(0, 0, 0, 0.25);
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            animation: pulseText 2s ease-in-out infinite;
+            position: relative;
+            z-index: 2;
+        }
+
+        .click-hint i {
+            margin-right: 8px;
+        }
+
+        @keyframes pulseText {
+            0%,
+            100% {
+                opacity: 0.3;
+            }
+            50% {
+                opacity: 0.8;
+            }
+        }
+
+        /* ============================================
+                   ACTE 2 : INSTRUCTIONS
+                ============================================ */
+        .acte-instructions {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            transition: opacity 0.8s ease;
+            pointer-events: none;
+            padding: 2rem;
+            cursor: pointer;
+        }
+
+        .acte-instructions.visible {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        /* ===== INDICATEUR "CLIQUEZ SUR LE LIEN" ===== */
+        .acte-instructions .click-hint-instruction {
+            margin-top: 2.2rem;
+            /*
+                👇 TAILLE DU TEXTE "Cliquez sur le lien pour lancer"
+            */
+            font-size: 30px;
+            font-weight: 500;
+            color: rgb(0, 0, 0);
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            animation: pulseText 2s ease-in-out infinite;
+        }
+
+        .acte-instructions .click-hint-instruction i {
+            margin-right: 8px;
+        }
+
+        /* ===== LIGNES D'INSTRUCTIONS ===== */
+        .instruction-line {
+            /*
+                👇 TAILLE DU TEXTE NORMAL
+            */
+            font-size: 50px;
+            font-weight: 400;
+            color: #3a3a3e;
+            text-align: center;
+            line-height: 2;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+
+        .instruction-line.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* ===== LIEN URL ===== */
+        .instruction-line strong {
+            display: inline-block;
+            background: rgba(0, 0, 0, 0.06);
+            padding: 0.3rem 2rem;
+            border-radius: 40px;
+            /*
+                👇 TAILLE DU LIEN URL
+            */
+            font-size: 56px;
+            font-weight: 700;
+            color: #1a1a1e;
+            border: 1px solid rgba(0, 0, 0, 0.08);
+            letter-spacing: 0.5px;
+            backdrop-filter: blur(4px);
+            transition: background 0.3s ease, transform 0.3s ease;
+        }
+
+        .instruction-line strong:hover {
+            background: rgba(0, 0, 0, 0.10);
+            transform: scale(1.02);
+        }
+
+        .instruction-line strong i {
+            margin-right: 12px;
+            color: rgba(0, 0, 0, 0.3);
+        }
+
+        /* ===== TEXTE "Suivez la présentation..." ===== */
+        .instruction-line .hint {
+            display: block;
+            /*
+                👇 TAILLE DU TEXTE "Suivez la présentation..."
+            */
+            font-size: 40px;
+            color: rgba(0, 0, 0, 0.623);
+            margin-top: 8px;
+        }
+
+        .instruction-line .hint i {
+            margin-right: 10px;
+        }
+
+        .instruction-line .icon-globe {
+            color: rgba(0, 0, 0, 0.3);
+            margin-right: 10px;
+        }
+
+        /* ============================================
+                   ACTE 3 : COMPTE À REBOURS
+                ============================================ */
+        .acte-countdown {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            transition: opacity 0.6s ease;
+            pointer-events: none;
+        }
+
+        .acte-countdown.visible {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .countdown-digit {
+            /*
+                👇 TAILLE DES CHIFFRES DU COMPTE À REBOURS
+            */
+            font-size: 360px;
+            font-weight: 800;
+            color: #1a1a1e;
+            text-shadow: 0 10px 40px rgba(0, 0, 0, 0.04);
+            animation: digitPulse 0.8s ease forwards;
+            font-variant-numeric: tabular-nums;
+            letter-spacing: -4px;
+        }
+
+        .countdown-digit.fade-out-digit {
+            animation: digitFadeOut 0.5s ease forwards;
+        }
+
+        @keyframes digitPulse {
+            0% {
+                transform: scale(0.6);
+                opacity: 0;
+            }
+            50% {
+                transform: scale(1.12);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        @keyframes digitFadeOut {
+            0% {
+                transform: scale(1);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(0.8);
+                opacity: 0;
+            }
+        }
+
+        /* ===== LOADING BAR ===== */
+        .loading-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #1a1a1e, #6a6a6e);
+            width: 0%;
+            transition: width 0.3s linear;
+            z-index: 1001;
+            border-radius: 0 4px 4px 0;
+        }
+
+        /* ===== FOOTER ===== */
+        .splash-footer {
+            position: fixed;
+            bottom: 2rem;
+            left: 0;
+            right: 0;
+            text-align: center;
+            font-size: 12px;
+            color: rgba(0, 0, 0, 0.20);
+            letter-spacing: 0.5px;
+            z-index: 999;
+        }
+
+        .splash-footer i {
+            margin: 0 4px;
+        }
+
+        /* ============================================
+                   RESPONSIVE (MOBILE)
+                ============================================ */
+        @media (max-width: 600px) {
+            /* Logo plus petit sur mobile */
+            .logo-msm {
+                width: 180px;
+                height: 180px;
+            }
+
+            /* Ondulations plus petites sur mobile */
+            .ripple:nth-child(1) {
+                width: 220px;
+                height: 220px;
+            }
+            .ripple:nth-child(2) {
+                width: 260px;
+                height: 260px;
+            }
+            .ripple:nth-child(3) {
+                width: 300px;
+                height: 300px;
+            }
+            .ripple:nth-child(4) {
+                width: 340px;
+                height: 340px;
+            }
+            .ripple:nth-child(5) {
+                width: 380px;
+                height: 380px;
+            }
+
+            /* Textes des instructions plus petits sur mobile */
+            .instruction-line {
+                font-size: 18px;
+            }
+            .instruction-line strong {
+                font-size: 22px;
+                padding: 0.2rem 1.2rem;
+            }
+            .instruction-line .hint {
+                font-size: 15px;
+            }
+
+            /* Compte à rebours plus petit sur mobile */
+            .countdown-digit {
+                font-size: 100px;
+            }
+
+            /* Indicateurs "cliquez" plus petits */
+            .click-hint {
+                font-size: 12px;
+            }
+            .acte-instructions .click-hint-instruction {
+                font-size: 12px;
+            }
+        }
+
+        @media (max-width: 400px) {
+            /* Très petit écran */
+            .logo-msm {
+                width: 130px;
+                height: 130px;
+            }
+
+            .ripple:nth-child(1) {
+                width: 160px;
+                height: 160px;
+            }
+            .ripple:nth-child(2) {
+                width: 190px;
+                height: 190px;
+            }
+            .ripple:nth-child(3) {
+                width: 220px;
+                height: 220px;
+            }
+            .ripple:nth-child(4) {
+                width: 250px;
+                height: 250px;
+            }
+            .ripple:nth-child(5) {
+                width: 280px;
+                height: 280px;
+            }
+
+            .instruction-line {
+                font-size: 15px;
+            }
+            .instruction-line strong {
+                font-size: 18px;
+                padding: 0.2rem 1rem;
+            }
+            .instruction-line .hint {
+                font-size: 13px;
+            }
+
+            .countdown-digit {
+                font-size: 70px;
+            }
+
+            .click-hint {
+                font-size: 10px;
+            }
+            .acte-instructions .click-hint-instruction {
+                font-size: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== SPLASH SCREEN ===== -->
+    <div class="splash" id="splash">
+
+        <!-- ACTE 1 : LOGO AVEC ONDULATIONS -->
+        <div class="acte-logo" id="acteLogo">
+            <div class="ripple-container">
+                <div class="ripple"></div>
+                <div class="ripple"></div>
+                <div class="ripple"></div>
+                <div class="ripple"></div>
+                <div class="ripple"></div>
+                <div class="logo-msm" id="logoClick">
+                    <img src="logo.png" alt="MSM" />
+                </div>
+            </div>
+            <div class="click-hint">
+                <i class="fas fa-mouse-pointer"></i> Cliquez sur le logo pour continuer
+            </div>
+        </div>
+
+        <!-- ACTE 2 : INSTRUCTIONS -->
+        <div class="acte-instructions" id="acteInstructions">
+            <div class="instruction-line" id="line1">
+                <i class="fas fa-globe icon-globe"></i>
+                Ouvrez votre navigateur
+            </div>
+            <div class="instruction-line" id="line2">
+                et tapez
+            </div>
+            <div class="instruction-line" id="line3">
+                <strong id="linkClick"><i class="fas fa-link"></i> msm-beamer.vercel.app</strong>
+            </div>
+            <div class="instruction-line" id="line4">
+                <span class="hint">
+                    <i class="fas fa-mobile-alt"></i> Suivez la présentation sur votre appareil
+                </span>
+            </div>
+            <div class="click-hint-instruction">
+                <i class="fas fa-mouse-pointer"></i> Cliquez sur le lien pour lancer
+            </div>
+        </div>
+
+        <!-- ACTE 3 : COMPTE À REBOURS -->
+        <div class="acte-countdown" id="acteCountdown">
+            <div class="countdown-digit" id="countdownDisplay">3</div>
+        </div>
+
+    </div>
+
+    <!-- ===== LOADING BAR ===== -->
+    <div class="loading-bar" id="loadingBar"></div>
+
+    <!-- ===== FOOTER ===== -->
+    <div class="splash-footer">
+        <i class="fas fa-code"></i> MSM · <i class="fas fa-calendar-alt"></i> 2026
+    </div>
+
+    <script>
+        (function() {
+            'use strict';
+
+            // ============================================
+            //  CONFIGURATION
+            // ============================================
+            const PDF_URL = 'presentation.pdf';
+
+            const splash = document.getElementById('splash');
+            const loadingBar = document.getElementById('loadingBar');
+
+            const acteLogo = document.getElementById('acteLogo');
+            const acteInstructions = document.getElementById('acteInstructions');
+            const acteCountdown = document.getElementById('acteCountdown');
+            const countdownDisplay = document.getElementById('countdownDisplay');
+
+            const logoClick = document.getElementById('logoClick');
+            const linkClick = document.getElementById('linkClick');
+
+            const lines = [
+                document.getElementById('line1'),
+                document.getElementById('line2'),
+                document.getElementById('line3'),
+                document.getElementById('line4')
+            ];
+
+            let instructionsShown = false;
+            let countdownStarted = false;
+
+            // ============================================
+            //  ÉTAPE 1 : Clic sur le logo
+            // ============================================
+            logoClick.addEventListener('click', function() {
+                if (instructionsShown) return;
+
+                document.querySelectorAll('.ripple').forEach(el => {
+                    el.style.animation = 'none';
+                    el.style.opacity = '0';
+                });
+
+                document.querySelector('.click-hint').style.display = 'none';
+
+                acteLogo.classList.add('fade-out');
+
+                setTimeout(() => {
+                    acteInstructions.classList.add('visible');
+
+                    lines.forEach((line, index) => {
+                        setTimeout(() => {
+                            line.classList.add('show');
+                            if (index === lines.length - 1) {
+                                instructionsShown = true;
+                            }
+                        }, index * 400);
+                    });
+
+                }, 500);
+
+            });
+
+            // ============================================
+            //  ÉTAPE 2 : Clic sur le lien
+            // ============================================
+            linkClick.addEventListener('click', function(e) {
+                e.stopPropagation();
+                if (countdownStarted) return;
+                if (!instructionsShown) return;
+
+                countdownStarted = true;
+
+                acteInstructions.classList.remove('visible');
+
+                setTimeout(() => {
+                    acteCountdown.classList.add('visible');
+                    startCountdown();
+                }, 400);
+
+            });
+
+            // ============================================
+            //  Cliquer sur les instructions (pas sur le lien)
+            // ============================================
+            acteInstructions.addEventListener('click', function(e) {
+                if (e.target.closest('strong')) return;
+                if (countdownStarted) return;
+                if (!instructionsShown) return;
+
+                countdownStarted = true;
+
+                acteInstructions.classList.remove('visible');
+
+                setTimeout(() => {
+                    acteCountdown.classList.add('visible');
+                    startCountdown();
+                }, 400);
+            });
+
+            // ============================================
+            //  COMPTE À REBOURS
+            // ============================================
+            let count = 3;
+
+            function startCountdown() {
+                countdownDisplay.textContent = count;
+                countdownDisplay.style.animation = 'none';
+                void countdownDisplay.offsetWidth;
+                countdownDisplay.style.animation = 'digitPulse 0.8s ease forwards';
+
+                const interval = setInterval(() => {
+                    count -= 1;
+
+                    if (count >= 1) {
+                        countdownDisplay.style.animation = 'digitFadeOut 0.5s ease forwards';
+
+                        setTimeout(() => {
+                            countdownDisplay.textContent = count;
+                            countdownDisplay.style.animation = 'none';
+                            void countdownDisplay.offsetWidth;
+                            countdownDisplay.style.animation = 'digitPulse 0.8s ease forwards';
+                        }, 500);
+
+                    } else {
+                        clearInterval(interval);
+
+                        countdownDisplay.style.animation = 'digitFadeOut 0.5s ease forwards';
+
+                        setTimeout(() => {
+                            let progress = 0;
+                            const barInterval = setInterval(() => {
+                                progress += Math.random() * 12 + 3;
+                                if (progress >= 100) {
+                                    progress = 100;
+                                    clearInterval(barInterval);
+                                }
+                                loadingBar.style.width = progress + '%';
+                            }, 80);
+
+                            setTimeout(() => {
+                                splash.classList.add('hidden');
+                                window.location.href = PDF_URL;
+                            }, 1200);
+
+                        }, 600);
+                    }
+                }, 1400);
+            }
+
+        })();
+    </script>
+
+</body>
+</html>
